@@ -1,5 +1,6 @@
 package com.kursatmemis.firebasekotlin.view.authentication.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -7,9 +8,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kursatmemis.firebasekotlin.model.UserLoginData
 import com.kursatmemis.firebasekotlin.view.BaseFragment
+import com.kursatmemis.firebasekotlin.view.home.activity.MainActivity
 
 abstract class AuthBaseFragment<T: ViewBinding> : BaseFragment<T>() {
-    lateinit var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,12 +24,13 @@ abstract class AuthBaseFragment<T: ViewBinding> : BaseFragment<T>() {
         // Not: Kullanıcının oturumu açık değilse, currentUser değeri 'null' dır.
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            reload()
+            goToMainActivity()
         }
     }
 
-    private fun reload() {
-
+    fun goToMainActivity() {
+        val intent = Intent(activity, MainActivity::class.java)
+        startActivity(intent)
     }
 }
 
@@ -39,6 +42,6 @@ interface UserLoginDataValidator {
     fun isUserLoginDataEmpty(user: UserLoginData): Boolean {
         val email = user.email
         val password = user.password
-        return (email.isNotEmpty() && password.isNotEmpty())
+        return (email.isEmpty() || password.isEmpty())
     }
 }

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.authentication.fragment.RegisterFragment"
-    android:background="@color/authentication_background_color">
+    android:background="@color/authentication_background_color"
+    tools:context=".view.authentication.fragment.RegisterFragment">
 
     <TextView
         android:id="@+id/textView2"
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:text="@string/register"
-        android:textSize="30sp"
         android:textColor="@color/authentication_text_color"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,27 +27,27 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="20dp"
+        android:autofillHints="emailAddress"
         android:ems="10"
+        android:hint="@string/enter_your_email"
+        android:inputType="textEmailAddress"
         android:textColor="@color/authentication_text_color"
         android:textColorHint="@color/authentication_text_color_hint"
-        android:inputType="textEmailAddress"
-        android:hint="@string/enter_your_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        android:autofillHints="emailAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
+        android:autofillHints="password"
         android:ems="10"
+        android:hint="@string/enter_your_password"
+        android:inputType="textPassword"
         android:textColor="@color/authentication_text_color"
         android:textColorHint="@color/authentication_text_color_hint"
-        android:inputType="textPassword"
-        android:autofillHints="password"
-        android:hint="@string/enter_your_password"
         app:layout_constraintEnd_toEndOf="@+id/emailEditText"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
@@ -63,4 +63,16 @@
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText"
         tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

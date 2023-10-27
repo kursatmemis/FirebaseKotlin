@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kursatmemis.firebasekotlin.databinding.FragmentRegisterBinding
+import com.kursatmemis.firebasekotlin.helper.closeProgressBar
+import com.kursatmemis.firebasekotlin.helper.showProgressBar
 import com.kursatmemis.firebasekotlin.helper.showToast
 import com.kursatmemis.firebasekotlin.model.UserLoginData
 import com.kursatmemis.firebasekotlin.viewmodel.RegisterFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginDataProvider, UserLoginDataValidator {
+class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginDataProvider,
+    UserLoginDataValidator {
 
     private val registerFragmentViewModel: RegisterFragmentViewModel by viewModels()
 
@@ -26,7 +29,8 @@ class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginD
         binding.registerButton.setOnClickListener {
             val userLoginData = getUserLoginDataFromEditText()
             val isUserLoginDataEmpty = isUserLoginDataEmpty(userLoginData)
-            if (isUserLoginDataEmpty) {
+            if (!isUserLoginDataEmpty) {
+                showProgressBar(binding.progressBar)
                 registerFragmentViewModel.createAccount(userLoginData.email, userLoginData.password)
             } else {
                 showToast(requireContext(), "Please fill in the fields.")
@@ -38,7 +42,8 @@ class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginD
     }
 
     private fun observeLiveData() {
-        registerFragmentViewModel.responseLiveData.observe(viewLifecycleOwner, Observer {
+        registerFragmentViewModel.firebaseResponseLiveData.observe(viewLifecycleOwner, Observer {
+            closeProgressBar(binding.progressBar)
             showToast(requireContext(), it.message)
         })
     }
@@ -48,6 +53,5 @@ class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginD
         val password = binding.passwordEditText.text.toString()
         return UserLoginData(email, password)
     }
-
 
 }

@@ -1,54 +1,103 @@
 package com.kursatmemis.firebasekotlin.repository
 
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kursatmemis.firebasekotlin.model.FirebaseResponse
 
-class FirebaseRepository() {
+class FirebaseRepository {
 
     private val auth = Firebase.auth
+    private val generateFirebaseResponse = GenerateFirebaseResponse()
 
     fun createAccount(
         email: String,
         password: String,
-        authenticationCallBack: AuthenticationCallBack
+        firebaseOperationCallback: FirebaseOperationCallback
     ) {
-        var response: Response
-        var user: FirebaseUser?
-
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            user = auth.currentUser
-            if (task.isSuccessful) {
-                response = Response(true, "Your account was created!", user)
-            } else {
-                val errorMessage = task.exception?.message ?: "An error occurred!"
-                response = Response(false, errorMessage, user)
-            }
-            authenticationCallBack.callback(response)
+            signOut()
+            val response = generateFirebaseResponse.generateResponse(task)
+            firebaseOperationCallback.callback(response)
         }
     }
 
-    fun signIn(email: String, password: String, authenticationCallBack: AuthenticationCallBack) {
-        var response: Response
-        var user: FirebaseUser?
-
+    fun signIn(email: String, password: String, firebaseOperationCallback: FirebaseOperationCallback) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            user = auth.currentUser
-            if (task.isSuccessful) {
-                response = Response(true, "User signed in!", user)
-            } else {
-                val errorMessage = task.exception?.message ?: "An error occurred!"
-                response = Response(false, errorMessage, user)
-            }
-            authenticationCallBack.callback(response)
+            val response = generateFirebaseResponse.generateResponse(task)
+            firebaseOperationCallback.callback(response)
         }
+    }
+
+    private fun signOut() {
+        if (isSignIn()) {
+            auth.signOut()
+        }
+    }
+
+    private fun isSignIn(): Boolean {
+        return auth.currentUser != null
+    }
+
+    fun updateProfile(
+        profileUpdates: UserProfileChangeRequest,
+        user: FirebaseUser,
+        firebaseOperationCallback: FirebaseOperationCallback
+    ) {
+        user.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                val response = generateFirebaseResponse.generateResponse(task)
+                firebaseOperationCallback.callback(response)
+            }
+    }
+
+    fun sendPasswordResetEmail(email: String, firebaseOperationCallback: FirebaseOperationCallback) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            val response = generateFirebaseResponse.generateResponse(task)
+            firebaseOperationCallback.callback(response)
+        }
+    }
+
+    fun updatePassword(newPassword: String, firebaseOperationCallback: FirebaseOperationCallback) {
+        val user = auth.currentUser!!
+        user.updatePassword(newPassword).addOnCompleteListener { task ->
+            val response = generateFirebaseResponse.generateResponse(task)
+            firebaseOperationCallback.callback(response)
+        }
+    }
+
+    fun sendEmailVerification(firebaseOperationCallback: FirebaseOperationCallback) {
+        val user = auth.currentUser!!
+        user.sendEmailVerification()
+            .addOnCompleteListener { task ->
+                val response = generateFirebaseResponse.generateResponse(task)
+                firebaseOperationCallback.callback(response)
+            }
     }
 
 }
 
+class GenerateFirebaseResponse() {
 
-interface AuthenticationCallBack {
-    fun callback(response: Response)
+    fun <T> generateResponse(task: Task<T>): FirebaseResponse {
+        val response: FirebaseResponse
+        val isSuccessful = task.isSuccessful
+
+        if (isSuccessful) {
+            response = FirebaseResponse(true, "Your transaction was completed successfully!")
+        } else {
+            val errorMessage = task.exception?.message ?: "An error occurred!"
+            response = FirebaseResponse(false, errorMessage)
+        }
+        return response
+    }
+
 }
 
-data class Response(val isSuccess: Boolean, val message: String, val user: FirebaseUser?)
+interface FirebaseOperationCallback {
+    fun callback(response: FirebaseResponse)
+}
+

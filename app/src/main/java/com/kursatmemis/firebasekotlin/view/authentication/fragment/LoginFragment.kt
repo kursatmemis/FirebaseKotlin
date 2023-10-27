@@ -7,6 +7,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.kursatmemis.firebasekotlin.R
 import com.kursatmemis.firebasekotlin.databinding.FragmentLoginBinding
+import com.kursatmemis.firebasekotlin.helper.closeProgressBar
+import com.kursatmemis.firebasekotlin.helper.showProgressBar
 import com.kursatmemis.firebasekotlin.model.UserLoginData
 import com.kursatmemis.firebasekotlin.helper.showToast
 import com.kursatmemis.firebasekotlin.viewmodel.LoginFragmentViewModel
@@ -33,7 +35,8 @@ class LoginFragment : AuthBaseFragment<FragmentLoginBinding>(), UserLoginDataPro
         binding.loginButton.setOnClickListener {
             val userLoginData = getUserLoginDataFromEditText()
             val isUserLoginDataEmpty = isUserLoginDataEmpty(userLoginData)
-            if (isUserLoginDataEmpty) {
+            if (!isUserLoginDataEmpty) {
+                showProgressBar(binding.progressBar)
                 loginViewModel.signIn(userLoginData.email, userLoginData.password)
             } else {
                 showToast(requireContext(), "Please fill in the fields.")
@@ -48,8 +51,13 @@ class LoginFragment : AuthBaseFragment<FragmentLoginBinding>(), UserLoginDataPro
     }
 
     private fun observeLiveData() {
-        loginViewModel.responseLiveData.observe(viewLifecycleOwner) {
+        loginViewModel.firebaseResponseLiveData.observe(viewLifecycleOwner) {
             showToast(requireContext(), it.message)
+            closeProgressBar(binding.progressBar)
+            if (it.isSuccessful) {
+                goToMainActivity()
+                activity?.finish()
+            }
         }
     }
 
