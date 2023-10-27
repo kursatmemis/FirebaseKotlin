@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FirebaseKotlin</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="don_t_you_have_an_account_click_to_register">Don\'t you have an account? Click to register!</string>
+    <string name="enter_your_password_again">Enter your password again</string>
+    <string name="register">Register</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="send_password_reset_link">Send Password Reset Link</string>
+    <string name="click_to_reset_your_password">Click to reset your password</string>
+</resources>
