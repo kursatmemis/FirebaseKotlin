@@ -2,10 +2,18 @@ package com.kursatmemis.firebasekotlin.view.authentication.fragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.kursatmemis.firebasekotlin.databinding.FragmentRegisterBinding
-import com.kursatmemis.firebasekotlin.view.BaseFragment
+import com.kursatmemis.firebasekotlin.helper.showToast
+import com.kursatmemis.firebasekotlin.model.UserLoginData
+import com.kursatmemis.firebasekotlin.viewmodel.RegisterFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
+@AndroidEntryPoint
+class RegisterFragment : AuthBaseFragment<FragmentRegisterBinding>(), UserLoginDataProvider, UserLoginDataValidator {
+
+    private val registerFragmentViewModel: RegisterFragmentViewModel by viewModels()
 
     override fun createBindingObject(
         inflater: LayoutInflater,
@@ -16,8 +24,29 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
 
     override fun setupUI() {
         binding.registerButton.setOnClickListener {
-
+            val userLoginData = getUserLoginDataFromEditText()
+            val isUserLoginDataEmpty = isUserLoginDataEmpty(userLoginData)
+            if (isUserLoginDataEmpty) {
+                registerFragmentViewModel.createAccount(userLoginData.email, userLoginData.password)
+            } else {
+                showToast(requireContext(), "Please fill in the fields.")
+            }
         }
+
+        observeLiveData()
+
+    }
+
+    private fun observeLiveData() {
+        registerFragmentViewModel.responseLiveData.observe(viewLifecycleOwner, Observer {
+            showToast(requireContext(), it.message)
+        })
+    }
+
+    override fun getUserLoginDataFromEditText(): UserLoginData {
+        val email = binding.emailEditText.text.toString()
+        val password = binding.passwordEditText.text.toString()
+        return UserLoginData(email, password)
     }
 
 

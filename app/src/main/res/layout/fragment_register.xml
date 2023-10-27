@@ -46,26 +46,11 @@
         android:textColor="@color/authentication_text_color"
         android:textColorHint="@color/authentication_text_color_hint"
         android:inputType="textPassword"
-        android:autofillHints="emailAddress"
+        android:autofillHints="password"
         android:hint="@string/enter_your_password"
         app:layout_constraintEnd_toEndOf="@+id/emailEditText"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
-
-    <EditText
-        android:id="@+id/confirmPasswordEditText"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:textColor="@color/authentication_text_color"
-        android:textColorHint="@color/authentication_text_color_hint"
-        android:inputType="textPassword"
-        android:autofillHints="password"
-        android:hint="@string/enter_your_password_again"
-        app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
-        app:layout_constraintStart_toStartOf="@+id/passwordEditText"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <Button
         android:id="@+id/registerButton"
@@ -74,7 +59,8 @@
         android:layout_marginTop="40dp"
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="@+id/emailEditText"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText"
         tools:ignore="DuplicateSpeakableTextCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

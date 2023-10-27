@@ -9,7 +9,7 @@ import com.kursatmemis.firebasekotlin.R
 import com.kursatmemis.firebasekotlin.databinding.FragmentPasswordResetBinding
 import com.kursatmemis.firebasekotlin.view.BaseFragment
 
-class PasswordResetFragment : BaseFragment<FragmentPasswordResetBinding>() {
+class PasswordResetFragment : AuthBaseFragment<FragmentPasswordResetBinding>() {
 
     override fun createBindingObject(
         inflater: LayoutInflater,
